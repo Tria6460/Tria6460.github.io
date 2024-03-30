@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Signature Pad</title>
+<style>
+    #gambar-atas {
+      margin-bottom: 20px;
+    }
+    .blue-text {
+  color: blue;
+  font-size: 13px;
+  margin-right:-8px;
+  margin-left:7px;
+  font-weight:bold;
+  position:center;
+  
+}
+    
+    .Red-text {
+  color: Red;
+  font-size: 13px;
+  margin-right:-8px;
+  margin-left:7px;
+  font-weight:bold;
+  position:center;
+  
+}
+.line-menurun {
+  line-height: 1.1; /* Membuat jarak antar baris 1.5 kali tinggi huruf */
+}
+.spasi-teks {
+  margin-bottom: 5px; /* Menambahkan spasi bawah sebesar 10 piksel */
+}
+
+    #gambar-atas img {
+      width: 100%;
+      object-fit: cover;
+      max-height: 300px;
+    }
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
+
+    h2 {
+        margin-bottom: 20px;
+    }
+
+    #canvasContainer {
+        max-width: 400px; /* Atur lebar maksimum tempat tanda tangan */
+        margin: 0 auto; /* Posisikan tempat tanda tangan di tengah */
+        padding: 20px; /* Tambahkan ruang putih di sekitar tempat tanda tangan */
+        border-radius:30px;
+    }
+
+    canvas {
+        border: 2px solid #000;
+        cursor: crosshair;
+        border-radius:10px;
+    }
+
+    button {
+        margin-top: 10px;
+        margin-right: 5px; /* Tambahkan jarak kanan antara tombol */
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #2f539b;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    #background-color{
+      background-color:#0000ff;
+    }
+    
+
+    button:hover {
+        background-color: #00ffff;
+    }
+
+    #completionMessage {
+        display: none; /* Sembunyikan pesan penyelesaian saat pertama kali */
+        color: red;
+        font-size: 18px;
+        margin-top: 20px;
+    }
+    #signatureCanvas {
+    width: 300px;
+    height: 150px;
+}
+
+</style>
+</head>
+<body>
+   <p class="right-align blue-text">Silahkan SCAN QRIS Di Aplikasi Brimo<br>Setelah Scan Input Kode Refund Sebagai Jumlah Pada Aplikasi Brimo</p>
+<p class="right-align Red-text">Silahkan Input KODE REFUND 1234567</p>
+  <div id="gambar-atas">
+    <img src="https://i.ibb.co/qj7KPzL/20240330-153232.jpg" alt="Gambar Pucok">
+  </div>
+<div id="canvasContainer">
+    <h2>Tanda Tangan Penerima</h2>
+    <canvas id="signatureCanvas" width="400" height="150"></canvas>
+    <br>
+    <button onclick="clearSignature()">Pembayaran</button>
+    <button onclick="saveSignature()">Refund</button> <!-- Menjadikan tombol "Save Signature" bersebelahan dengan tombol "Clear Signature" -->
+</div>
+<div id="completionMessage" style="display: none; color: red;">
+    <p>Tanda tangan selesai!</p>
+</div>
+<script>
+    const canvas = document.getElementById('signatureCanvas');
+    const ctx = canvas.getContext('2d');
+    let isDrawing = false;
+    let lastX = 0;
+    let lastY = 0;
+
+    canvas.addEventListener('mousedown', (e) => {
+        isDrawing = true;
+        [lastX, lastY] = [e.offsetX, e.offsetY];
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+        if (isDrawing) {
+            drawLine(ctx, lastX, lastY, e.offsetX, e.offsetY);
+            [lastX, lastY] = [e.offsetX, e.offsetY];
+        }
+    });
+
+    canvas.addEventListener('mouseup', () => {
+        isDrawing = false;
+    });
+
+    canvas.addEventListener('mouseout', () => {
+        isDrawing = false;
+    });
+
+    function drawLine(ctx, x1, y1, x2, y2) {
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+        ctx.closePath();
+    }
+
+    function clearSignature() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function saveSignature() {
+        const dataURL = canvas.toDataURL();
+        // Kirim dataURL ke server atau lakukan sesuatu dengan tanda tangan digital
+        console.log(dataURL);
+        showCompletionMessage();
+    }
+
+    function showCompletionMessage() {
+        const canvasContainer = document.getElementById('canvasContainer');
+        const completionMessage = document.getElementById('completionMessage');
+        canvasContainer.style.display = 'none';
+        completionMessage.style.display = 'block';
+    }
+</script>
+</body>
+</html>
